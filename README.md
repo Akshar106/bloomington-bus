@@ -8,8 +8,6 @@ A small web app for IU students. It shows live arrivals at any Bloomington Trans
 
 **Live demo: [bloomington-bus.onrender.com](https://bloomington-bus.onrender.com)**. It runs on Render's free tier, which sleeps when nobody is using it, so the first visit can take about a minute to wake up.
 
-> Unofficial student project. Not affiliated with Bloomington Transit or Indiana University.
-
 ## Screenshots
 
 Taken on Oct 20, 2026 from the app running locally against BT's live feed, on its first afternoon of collecting data. The live times are real. A bus needs 3 recorded days before it gets a track record, so the stop's table still says "Not enough data yet", and the route page reflects only a few hours.
