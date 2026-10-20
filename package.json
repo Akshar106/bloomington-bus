@@ -1,0 +1,25 @@
+{
+  "name": "bloomington-bus",
+  "private": true,
+  "description": "Live arrivals and on-time history for Bloomington Transit buses, for IU students.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run dev -w client",
+    "collect": "npm run collect -w server",
+    "import-schedule": "npm run import-schedule -w server",
+    "build": "npm run build -w client",
+    "start": "npm run start -w server",
+    "test": "npm test --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "lint": "npm run lint -w client"
+  }
+}

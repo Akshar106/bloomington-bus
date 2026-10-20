@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+.DS_Store
+.env
+
+# SQLite database and its WAL files (data/snapshot/ is the one committed exception, for the test deploy)
+data/*.sqlite*
+data/*.log
+data/*.pid
