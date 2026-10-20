@@ -1,13 +1,19 @@
-# Render Blueprint for a free test deploy (render.com > New > Blueprint > pick this repo).
-# Free web services sleep after 15 minutes without visitors and reset their disk on restart, so the
-# app ships with a snapshot of the laptop's database (npm run snapshot -w server) and keeps
-# collecting while awake. Delete the service in Render's dashboard when the test is over.
+# Render Blueprint for a free deploy (render.com > New > Blueprint > pick this repo).
+#
+# Deploys are driven by GitHub Actions: Render's own deploy-on-push is off, and the CI workflow
+# calls the service's deploy hook only after every check passes on main.
+#
+# Free web services sleep after 15 minutes without visitors and reset their disk on restart, so
+# the app can ship a snapshot of the laptop's database (npm run snapshot) and keeps collecting
+# while awake. Delete the service in Render's dashboard when the test is over.
 services:
   - type: web
     name: bloomington-bus
     runtime: node
     plan: free
     region: ohio
+    branch: main
+    autoDeployTrigger: "off"
     buildCommand: npm ci --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /api/status

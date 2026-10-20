@@ -1,0 +1,75 @@
+# Every push and pull request: type-check, lint, test and build.
+# Pushes to main that pass all checks are then deployed to Render through its deploy hook.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Type-check, lint, test, build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24 # same major version as Render
+          cache: npm
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  deploy:
+    name: Deploy to Render
+    needs: checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
+    env:
+      DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      SITE_URL: ${{ vars.RENDER_SITE_URL }}
+    steps:
+      - name: Skip until Render is connected
+        if: env.DEPLOY_HOOK == ''
+        run: echo "::notice::Render isn't connected yet. Add the RENDER_DEPLOY_HOOK_URL secret to deploy every green push to main."
+
+      - name: Trigger the deploy
+        if: env.DEPLOY_HOOK != ''
+        run: curl --fail --silent --show-error --request POST "$DEPLOY_HOOK" > /dev/null
+
+      - name: Wait for this commit to go live
+        if: env.DEPLOY_HOOK != '' && env.SITE_URL != ''
+        run: |
+          for attempt in $(seq 1 60); do
+            live=$(curl --silent --max-time 60 "$SITE_URL/api/status" | jq -r '.commit // empty' || true)
+            if [ "$live" = "$GITHUB_SHA" ]; then
+              echo "Live at $SITE_URL"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::$SITE_URL still isn't serving $GITHUB_SHA after 15 minutes."
+          exit 1
+
+      - name: Smoke test
+        if: env.DEPLOY_HOOK != '' && env.SITE_URL != ''
+        run: |
+          curl --fail --silent --show-error "$SITE_URL/" | grep -q "<title>Bloomington Bus</title>"
+          test "$(curl --fail --silent --show-error "$SITE_URL/api/routes" | jq length)" -gt 0
+          curl --fail --silent --show-error "$SITE_URL/api/status" | jq .

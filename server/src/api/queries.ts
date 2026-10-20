@@ -258,5 +258,7 @@ export function status(db: DB, nowS: number) {
     firstDay: counts.first_day,
     scheduleImportedAt: num("schedule_imported_at"),
     historyDays: HISTORY_DAYS,
+    // Set by Render; the deploy job waits until this matches the commit it pushed.
+    commit: process.env.RENDER_GIT_COMMIT ?? null,
   };
 }

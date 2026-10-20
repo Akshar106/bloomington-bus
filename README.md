@@ -1,5 +1,7 @@
 # Bloomington Bus
 
+[![CI](https://github.com/Akshar106/bloomington-bus/actions/workflows/ci.yml/badge.svg)](https://github.com/Akshar106/bloomington-bus/actions/workflows/ci.yml)
+
 **When is the next Bloomington Transit bus really coming, and how late does it usually run?**
 
 A small web app for IU students. It shows live arrivals at any Bloomington Transit (BT) stop and the track record of every scheduled bus ("the 8:10 AM Route 6 at Wells Library is usually 3 minutes late, on time 70% of weekdays"), built from data it collects itself.
@@ -57,14 +59,30 @@ Checks: `npm test`, `npm run typecheck`, `npm run lint`. Production mode is `npm
 
 On macOS, the collector script also keeps the laptop from idle-sleeping while it runs. Closing the lid still sleeps it, and that shows up as a gap in the data.
 
-## Test deploy on Render (free)
+## CI/CD
 
-Render's free web services sleep after 15 minutes without visitors and reset their disk on restart. So the deploy ships a snapshot of the history collected on your laptop and keeps collecting while awake.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request:
 
-1. `npm run snapshot` writes `data/snapshot/bus.sqlite.gz` (the last 28 days). Commit it and push to GitHub.
-2. On render.com, choose **New → Blueprint** and pick the repo. [`render.yaml`](render.yaml) sets everything up.
-3. Try it. The first visit after a sleep takes up to a minute.
-4. Delete the service in Render's dashboard when you're done.
+1. **Checks:** type-check, lint, unit and API tests, production build (Node 24, like Render).
+2. **Deploy** (pushes to `main` only, after the checks pass): calls the Render service's deploy hook, waits until `/api/status` reports the pushed commit, then smoke-tests the live site.
+
+Render's own deploy-on-push is off in [`render.yaml`](render.yaml), so a commit that fails CI never goes live. Until Render is connected, the deploy job passes with a notice instead of deploying.
+
+## Deploy on Render (free)
+
+Render's free web services sleep after 15 minutes without visitors and reset their disk on restart. So a deploy can ship a snapshot of the history collected on your laptop, and it keeps collecting while awake.
+
+One-time setup:
+
+1. On [render.com](https://render.com), sign in with GitHub, choose **New → Blueprint** and pick this repo. [`render.yaml`](render.yaml) creates the free web service and its first deploy.
+2. In the service's **Settings → Deploy Hook**, copy the URL. Then save it, and the site's URL, in GitHub:
+   ```bash
+   gh secret set RENDER_DEPLOY_HOOK_URL
+   gh variable set RENDER_SITE_URL --body https://<your-service>.onrender.com
+   ```
+3. From then on, every green push to `main` deploys automatically.
+
+To ship history: run `npm run snapshot` (writes `data/snapshot/bus.sqlite.gz`, the last 28 days), commit it and push. When the test is over, delete the service in Render's dashboard and remove the secret with `gh secret delete RENDER_DEPLOY_HOOK_URL`.
 
 ## Project layout
 
