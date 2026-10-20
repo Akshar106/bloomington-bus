@@ -20,6 +20,7 @@
     "start": "npm run start -w server",
     "test": "npm test --workspaces",
     "typecheck": "npm run typecheck --workspaces",
-    "lint": "npm run lint -w client"
+    "lint": "npm run lint -w client",
+    "snapshot": "npm run snapshot -w server"
   }
 }

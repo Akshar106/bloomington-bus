@@ -8,7 +8,8 @@
     "collect": "node src/collector/main.ts",
     "import-schedule": "node src/schedule/main.ts",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "snapshot": "node scripts/snapshot-db.ts"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",

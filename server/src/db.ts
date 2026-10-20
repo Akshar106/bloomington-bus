@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import zlib from "node:zlib";
 import Database from "better-sqlite3";
 import { config } from "./config.ts";
 
@@ -57,7 +58,11 @@ CREATE INDEX IF NOT EXISTS arrivals_by_route ON arrivals (route_id, service_date
 `;
 
 export function openDb(file = config.dbPath): DB {
-  if (file !== ":memory:") fs.mkdirSync(path.dirname(file), { recursive: true });
+  if (file !== ":memory:") {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    // A deploy ships its history as a gzipped snapshot (npm run snapshot); unpack it on first start.
+    if (!fs.existsSync(file) && fs.existsSync(`${file}.gz`)) fs.writeFileSync(file, zlib.gunzipSync(fs.readFileSync(`${file}.gz`)));
+  }
   const db = new Database(file);
   db.pragma("journal_mode = WAL"); // the collector writes while the web server reads
   db.pragma("busy_timeout = 5000");

@@ -1,0 +1,33 @@
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.list li + li {
+  border-top: 1px solid var(--border);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.item:hover {
+  background: var(--surface-2);
+}
+
+.name {
+  font-weight: 600;
+}
+
+.routes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}

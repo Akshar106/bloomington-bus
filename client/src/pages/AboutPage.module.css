@@ -1,0 +1,46 @@
+.page {
+  max-width: 38rem;
+}
+
+.page h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.page h2 {
+  font-size: 1.1rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.page ul {
+  padding-left: 1.2rem;
+}
+
+.page li + li {
+  margin-top: 0.35rem;
+}
+
+.facts {
+  margin: 0;
+  padding: 0.25rem 1rem;
+}
+
+.facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0;
+}
+
+.facts div + div {
+  border-top: 1px solid var(--border);
+}
+
+.facts dt {
+  color: var(--muted);
+}
+
+.facts dd {
+  margin: 0;
+  font-weight: 650;
+}

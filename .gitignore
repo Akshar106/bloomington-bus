@@ -4,7 +4,11 @@ coverage/
 .DS_Store
 .env
 
-# SQLite database and its WAL files (data/snapshot/ is the one committed exception, for the test deploy)
+# SQLite database and its WAL files (data/snapshot/bus.sqlite.gz is committed only for a test deploy)
 data/*.sqlite*
 data/*.log
 data/*.pid
+data/snapshot/*.sqlite
+
+# Local editor/agent settings
+.claude/
