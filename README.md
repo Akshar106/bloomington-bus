@@ -6,6 +6,8 @@
 
 A small web app for IU students. It shows live arrivals at any Bloomington Transit (BT) stop and the track record of every scheduled bus ("the 8:10 AM Route 6 at Wells Library is usually 3 minutes late, on time 70% of weekdays"), built from data it collects itself.
 
+**Live demo: [bloomington-bus.onrender.com](https://bloomington-bus.onrender.com)**. It runs on Render's free tier, which sleeps when nobody is using it, so the first visit can take about a minute to wake up.
+
 > Unofficial student project. Not affiliated with Bloomington Transit or Indiana University.
 
 ## Screenshots
