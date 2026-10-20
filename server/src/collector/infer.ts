@@ -55,7 +55,8 @@ export function frontier(t: TripSnapshot, trip: TripInfo): number | undefined {
   return atVehicle - listed <= MAX_VEHICLE_LEAD ? Math.max(listed, atVehicle) : listed;
 }
 
-const tripDelay = (t: TripSnapshot): number | undefined => t.upcoming.values().next().value;
+/** BT reports one delay for the whole trip; take it from the first listed stop. */
+export const tripDelay = (t: TripSnapshot): number | undefined => t.upcoming.values().next().value;
 
 export function inferArrivals(prev: Snapshot, cur: Snapshot, ctx: InferContext): Arrival[] {
   const gap = cur.feedTs - prev.feedTs;

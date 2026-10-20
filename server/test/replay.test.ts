@@ -1,35 +1,8 @@
-// Replays five real snapshots recorded from BT's feed (30 s apart, Oct 20 2026) through the collector.
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+// Replays five real snapshots recorded from BT's feed through the collector.
 import { describe, expect, it } from "vitest";
 import { Collector } from "../src/collector/collector.ts";
 import { MAX_ABS_DELAY_S } from "../src/collector/infer.ts";
-import { openDb, type DB } from "../src/db.ts";
-import { parseFeeds, type Snapshot } from "../src/realtime/feed.ts";
-
-const fixtures = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures");
-
-function loadSnapshots(): Snapshot[] {
-  const dir = path.join(fixtures, "snapshots");
-  return fs
-    .readdirSync(dir)
-    .filter((f) => f.endsWith("trip_updates.pb"))
-    .sort()
-    .map((f) => parseFeeds(fs.readFileSync(path.join(dir, f)), fs.readFileSync(path.join(dir, f.replace("trip_updates", "vehicle_positions")))));
-}
-
-function scheduleDb(): DB {
-  const db = openDb(":memory:");
-  const rows = JSON.parse(fs.readFileSync(path.join(fixtures, "schedule.json"), "utf8")) as Record<string, Record<string, unknown>[]>;
-  for (const [table, list] of Object.entries(rows)) {
-    for (const row of list) {
-      const cols = Object.keys(row);
-      db.prepare(`INSERT INTO ${table} (${cols.join(",")}) VALUES (${cols.map((c) => `@${c}`).join(",")})`).run(row);
-    }
-  }
-  return db;
-}
+import { loadSnapshots, scheduleDb } from "./helpers.ts";
 
 describe("replaying recorded BT snapshots", () => {
   const snapshots = loadSnapshots();
@@ -41,7 +14,6 @@ describe("replaying recorded BT snapshots", () => {
     stop_sequence: number;
     observed_at: number;
     delay_s: number;
-    method: string;
   }[];
 
   it("parses every snapshot and sees the running buses", () => {
