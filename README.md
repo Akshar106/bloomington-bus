@@ -8,6 +8,23 @@ A small web app for IU students. It shows live arrivals at any Bloomington Trans
 
 > Unofficial student project. Not affiliated with Bloomington Transit or Indiana University.
 
+## Screenshots
+
+Taken on Oct 20, 2026 from the app running locally against BT's live feed, on its first afternoon of collecting data. The live times are real. A bus needs 3 recorded days before it gets a track record, so the stop's table still says "Not enough data yet", and the route page reflects only a few hours.
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/home-search.png" width="240" alt="Home page searching for 'memorial union', listing four IMU stops with their route badges"><br><sub><b>Find a stop</b> by name or "Near me"</sub></td>
+    <td align="center"><img src="docs/screenshots/stop-live.png" width="240" alt="IMU stop page listing the next buses, with live status such as 1 min early, 1 min late, on time or scheduled"><br><sub><b>Next buses</b>, live from BT's feed</sub></td>
+    <td align="center"><img src="docs/screenshots/stop-record.png" width="240" alt="Timetable of every weekday bus at the stop, with a record column that still says not enough data yet"><br><sub><b>How late each bus runs</b> (fills in after 3 days)</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/route.png" width="240" alt="Route 6 Campus Shuttle page with its on-time rate and stops in order"><br><sub><b>Route page</b> with each stop's record</sub></td>
+    <td align="center"><img src="docs/screenshots/about.png" width="240" alt="About page explaining how it works and showing 606 departures recorded so far"><br><sub><b>About</b>, with live collection stats</sub></td>
+    <td></td>
+  </tr>
+</table>
+
 ## What it does
 
 - **Find a stop** by name, or tap **Near me**. Your location is used only in your browser.
